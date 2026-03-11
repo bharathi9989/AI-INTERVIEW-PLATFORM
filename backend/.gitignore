@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+
+# environment variables
+.env
+
+# logs
+logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+
+# build
+dist/
+build/
+
+# coverage
+coverage/
+
+# temp files
+tmp/
+temp/
+
+# IDE
+.vscode/
+.idea/
+
+# Mac
+.DS_Store
