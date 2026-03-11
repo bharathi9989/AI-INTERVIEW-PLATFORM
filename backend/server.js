@@ -1,11 +1,21 @@
 import express from "express";
-import dotenev from "dotenv"
+import cors from "cors";
+import dotenv from "dotenv";
 
-const app = express()
+import connectDB from "./src/config/db.js";
+import authRoutes from "./src/routes/authRoutes.js";
 
+dotenv.config();
 
-const PORT = 2026
+const app = express();
 
-app.listen(PORT, () => { 
-    console.log("application is Healthy...")
-})
+connectDB();
+
+app.use(cors());
+app.use(express.json());
+
+app.use("/api/auth", authRoutes);
+
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
+});
