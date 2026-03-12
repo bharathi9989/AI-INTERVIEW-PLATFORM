@@ -1,7 +1,7 @@
-import { asyncHandler } from "../core/asyncHandler";
-import { HttpError } from "../core/httpException";
+import { asyncHandler } from "../core/asyncHandler.js";
+import { HttpError } from "../core/httpException.js";
 import User from "../config/db.js";
-import jwt from "jsonwebtoken";
+
 import bcrypt from "bcryptjs";
 
 export const register = asyncHandler(async (req, res) => {

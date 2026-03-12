@@ -2,12 +2,12 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-if (!process.env.DATABASE_URL) {
+if (!process.env.DATABASE_URI) {
   throw new Error("DATABASE_URL is missing");
 }
 
 export const ENV = {
-  DATABASE_URL: process.env.DATABASE_URL,
+  MONGO_URI: process.env.MONGO_URI,
   PORT: process.env.PORT || 5000,
   JWT_SECRET: process.env.JWT_SECRET || "supersecretkey",
 
