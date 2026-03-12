@@ -16,4 +16,5 @@ app.use("/api/auth", authRoutes);
 
 app.listen(ENV.PORT, () => {
   console.log(`Server running on port ${ENV.PORT}`);
+  console.log("connected to DataBase");
 });
