@@ -5,9 +5,6 @@ import { HttpError } from "../core/httpException.js";
 import { findUserByEmail, createUser } from "../repositories/userRepository.js";
 
 
-import bcrypt from "bcryptjs";
-import { HttpError } from "../core/httpException.js";
-import { findUserByEmail, createUser } from "../repositories/userRepository.js";
 
 export const registerService = async ({ name, email, password }) => {
   // 1️⃣ check if user already exists
