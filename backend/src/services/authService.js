@@ -1,7 +1,39 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ENV } from "../config/env.js";
-import { findUserByEmail } from "../repositories/userRepository.js";
+import { HttpError } from "../core/httpException.js";
+import { findUserByEmail, createUser } from "../repositories/userRepository.js";
+
+
+import bcrypt from "bcryptjs";
+import { HttpError } from "../core/httpException.js";
+import { findUserByEmail, createUser } from "../repositories/userRepository.js";
+
+export const registerService = async ({ name, email, password }) => {
+  // 1️⃣ check if user already exists
+  const existingUser = await findUserByEmail(email);
+
+  if (existingUser) {
+    throw new HttpError(400, "User already exists");
+  }
+
+  // 2️⃣ hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // 3️⃣ create user
+  const newUser = await createUser({
+    name,
+    email,
+    password: hashedPassword,
+  });
+
+  // 4️⃣ return safe user data
+  return {
+    id: newUser._id,
+    name: newUser.name,
+    email: newUser.email,
+  };
+};
 
 export const loginService = async (email, password) => {
   const user = await findUserByEmail(email);
