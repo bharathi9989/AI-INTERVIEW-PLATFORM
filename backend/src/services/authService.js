@@ -30,22 +30,34 @@ export const registerService = async ({ name, email, password }) => {
   };
 };
 
-export const loginService = async (email, password) => {
+
+
+export const loginService = async ({ email, password }) => {
+  // find user by email
   const user = await findUserByEmail(email);
 
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new HttpError(401, "Invalid email or password");
   }
 
+  // compare password
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    throw new Error("Invalid credentials");
+    throw new HttpError(401, "Invalid email or password");
   }
 
-  const token = jwt.sign({ id: user._id }, ENV.JWT_SECRET);
+  // create JWT
+  const token = jwt.sign({ id: user._id }, ENV.JWT_SECRET, { expiresIn: "7d" });
 
-  return { token };
+  return {
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    },
+  };
 };
 
 
