@@ -4,8 +4,6 @@ import { ENV } from "../config/env.js";
 import { HttpError } from "../core/httpException.js";
 import { findUserByEmail, createUser } from "../repositories/userRepository.js";
 
-
-
 export const registerService = async ({ name, email, password }) => {
   // 1️⃣ check if user already exists
   const existingUser = await findUserByEmail(email);
@@ -48,4 +46,20 @@ export const loginService = async (email, password) => {
   const token = jwt.sign({ id: user._id }, ENV.JWT_SECRET);
 
   return { token };
+};
+
+
+
+export const getMeService = async (userId) => {
+  const user = await findUserById(userId);
+
+  if (!user) {
+    throw new HttpError(404, "User not found");
+  }
+
+  return {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+  };
 };
