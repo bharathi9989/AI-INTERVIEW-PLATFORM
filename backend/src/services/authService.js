@@ -4,6 +4,8 @@ import { ENV } from "../config/env.js";
 import { HttpError } from "../core/httpException.js";
 import { findUserByEmail, createUser } from "../repositories/userRepository.js";
 
+// Register serive
+
 export const registerService = async ({ name, email, password }) => {
   // 1️⃣ check if user already exists
   const existingUser = await findUserByEmail(email);
@@ -31,7 +33,7 @@ export const registerService = async ({ name, email, password }) => {
 };
 
 
-
+// Login service
 export const loginService = async ({ email, password }) => {
   // find user by email
   const user = await findUserByEmail(email);
@@ -60,7 +62,7 @@ export const loginService = async ({ email, password }) => {
   };
 };
 
-
+// GetMe service
 
 export const getMeService = async (userId) => {
   const user = await findUserById(userId);
