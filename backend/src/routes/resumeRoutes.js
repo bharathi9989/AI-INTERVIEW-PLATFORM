@@ -1,17 +1,10 @@
-import mongoose from "mongoose";
+import express from "express";
+import upload from "../utils/multer.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+import { uploadResume } from "../controllers/resumeController.js";
 
-const resumeSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  fileName: String,
-  fileUrl: String,
-  extractedText: String,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+const router = express.Router();
 
-export default mongoose.model("Resume", resumeSchema);
+router.post("/upload", authMiddleware, upload.single("resume"), uploadResume);
+
+export default router;
