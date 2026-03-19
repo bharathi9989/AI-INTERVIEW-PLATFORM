@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+// user data retrive from data base 
 
 export const findUserByEmail = async (email) => {
   return User.findOne({ email });
