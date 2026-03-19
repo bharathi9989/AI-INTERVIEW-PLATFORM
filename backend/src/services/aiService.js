@@ -1,10 +1,13 @@
-import OpenAI from "openai";
-import { ENV } from "../config/env.js";
 
+import OpenAI from "openai";
+
+// intiate open AI
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+
+// Question Generate prompt
 export const generateQuestions = async (resumeText) => {
   const prompt = `
 You are a senior technical interviewer.
