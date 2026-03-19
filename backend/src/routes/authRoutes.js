@@ -1,3 +1,5 @@
+// authRotes
+
 import express from "express";
 
 import { register, login, getMe } from "../controllers/authController.js";
