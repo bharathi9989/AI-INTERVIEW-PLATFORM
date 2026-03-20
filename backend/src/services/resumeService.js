@@ -1,7 +1,6 @@
 import fs from "fs";
-import pkg from "pdf-parse";
 
-const pdfParse = pkg;
+const pdfParse = (await import("pdf-parse")).default;
 
 import { createResume } from "../repositories/resumeRepository.js";
 import { generateQuestions } from "./aiService.js";
