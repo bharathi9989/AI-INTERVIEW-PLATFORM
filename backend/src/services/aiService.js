@@ -45,3 +45,44 @@ ${resumeText}
 
   return JSON.parse(content);
 };
+
+export const evaluateAnswer = async (question, answer) => {
+  const prompt = `
+You are a senior technical interviewer.
+
+Evaluate the candidate's answer.
+
+Question:
+${question}
+
+Candidate Answer:
+${answer}
+
+Evaluate based on:
+- correctness
+- depth
+- clarity
+
+Return JSON:
+
+{
+  "score": number (0-10),
+  "feedback": "...",
+  "improvement": "...",
+  "correctAnswer": "..."
+}
+`;
+
+  const response = await client.chat.completions.create({
+    model: "gpt-4.1-mini",
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  const content = response.choices[0].message.content;
+
+  try {
+    return JSON.parse(content);
+  } catch {
+    throw new Error("AI parsing failed");
+  }
+};
