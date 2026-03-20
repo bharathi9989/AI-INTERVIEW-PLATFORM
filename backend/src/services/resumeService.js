@@ -1,5 +1,7 @@
 import fs from "fs";
-import pdfParse from "pdf-parse";
+import pkg from "pdf-parse";
+
+const pdfParse = pkg;
 
 import { createResume } from "../repositories/resumeRepository.js";
 import { generateQuestions } from "./aiService.js";
@@ -11,7 +13,6 @@ export const processResumeService = async ({ userId, file }) => {
 
   const extractedText = data.text;
 
-  // 🔥 AI CALL
   const aiResult = await generateQuestions(extractedText);
 
   const resume = await createResume({
