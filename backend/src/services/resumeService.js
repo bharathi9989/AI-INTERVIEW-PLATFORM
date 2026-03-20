@@ -2,17 +2,18 @@ import fs from "fs";
 import pdfParse from "pdf-parse";
 
 import { createResume } from "../repositories/resumeRepository.js";
+import { generateQuestions } from "./aiService.js";
 
 export const processResumeService = async ({ userId, file }) => {
-  // read uploaded file
   const fileBuffer = fs.readFileSync(file.path);
 
-  // extract text from PDF
   const data = await pdfParse(fileBuffer);
 
   const extractedText = data.text;
 
-  // save to DB
+  // 🔥 AI CALL
+  const aiResult = await generateQuestions(extractedText);
+
   const resume = await createResume({
     userId,
     fileName: file.originalname,
@@ -21,7 +22,7 @@ export const processResumeService = async ({ userId, file }) => {
   });
 
   return {
-    id: resume._id,
-    fileName: resume.fileName,
+    resumeId: resume._id,
+    questions: aiResult.questions,
   };
 };
