@@ -2,7 +2,7 @@ import { Children } from "react";
 import { createContext, useState } from "react"; 
 import { data } from "react-router-dom";
 
-export const AuthContecxt = createContext()
+export const AuthContext = createContext();
 export const AuthProvider = ({ Children }) => {
 
     const [user, setUser] = useState(null)
@@ -18,9 +18,9 @@ export const AuthProvider = ({ Children }) => {
     }
 
     return (
-        <AuthContecxt.Provider value={{user,login,logout}}>
-
-        </AuthContecxt.Provider>
-    )
+      <AuthContext.Provider
+        value={{ user, login, logout }}
+      ></AuthContext.Provider>
+    );
 
 }
