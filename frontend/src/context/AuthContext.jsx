@@ -3,7 +3,6 @@ import { createContext, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-
   const [user, setUser] = useState(null);
 
   const login = (data) => {
@@ -12,13 +11,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("token");   // fix
+    localStorage.removeItem("token");
     setUser(null);
   };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
-      {children}   {/* 🔥 THIS WAS MISSING */}
+      {children}
     </AuthContext.Provider>
   );
 };
