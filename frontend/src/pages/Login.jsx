@@ -1,26 +1,33 @@
 import { useState, useContext } from "react";
 import API from "../api/axios";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { login } = useContext(AuthContext);
+  const context = useContext(AuthContext);
+  const login = context?.login;
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await API.post("/auth/login", {
-      email,
-      password,
-    });
+    try {
+      const res = await API.post("/auth/login", {
+        email,
+        password,
+      });
 
-    login(res.data.data);
+      login(res.data.data);
 
-    navigate("/dashboard");
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+      alert("Login failed");
+    }
   };
 
   return (
