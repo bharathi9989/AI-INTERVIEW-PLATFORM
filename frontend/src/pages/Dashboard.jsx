@@ -1,9 +1,20 @@
-import React from 'react'
+import { useNavigate } from "react-router-dom";
 
-function Dashboard() {
+const Dashboard = () => {
+  const navigate = useNavigate();
+
   return (
-    <div>Dashboard</div>
-  )
-}
+    <div className="h-screen flex flex-col items-center justify-center gap-6">
+      <h1 className="text-2xl font-bold">Dashboard 🚀</h1>
 
-export default Dashboard
+      <button
+        onClick={() => navigate("/upload")}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Upload Resume
+      </button>
+    </div>
+  );
+};
+
+export default Dashboard;
