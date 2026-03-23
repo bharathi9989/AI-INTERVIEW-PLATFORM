@@ -4,6 +4,8 @@ import API from "../api/axios";
 const Upload = () => {
   const [file, setFile] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [results, setResults] = useState([]);
 
   const handleUpload = async () => {
     const formData = new FormData();
@@ -11,11 +13,32 @@ const Upload = () => {
 
     try {
       const res = await API.post("/resume/upload", formData);
-
       setQuestions(res.data.data.questions);
     } catch (error) {
       console.log(error);
       alert("Upload failed");
+    }
+  };
+
+  const handleAnswerChange = (index, value) => {
+    setAnswers({ ...answers, [index]: value });
+  };
+
+  const handleEvaluate = async () => {
+    const qaList = questions.map((q, index) => ({
+      question: q.question,
+      answer: answers[index] || "",
+    }));
+
+    try {
+      const res = await API.post("/interview/evaluate-batch", {
+        qaList,
+      });
+
+      setResults(res.data.data.results);
+    } catch (error) {
+      console.log(error);
+      alert("Evaluation failed");
     }
   };
 
@@ -36,17 +59,38 @@ const Upload = () => {
         Upload
       </button>
 
-      {/* Questions */}
+      {/* Questions + Answer */}
       <div className="mt-6">
         {questions.map((q, index) => (
-          <div key={index} className="mb-3 p-3 border rounded">
-            <p>{q.question}</p>
-            <small>
-              {q.type} | {q.difficulty}
-            </small>
+          <div key={index} className="mb-4 p-4 border rounded">
+            <p className="font-semibold">{q.question}</p>
+
+            <textarea
+              className="border w-full p-2 mt-2"
+              placeholder="Type your answer..."
+              onChange={(e) => handleAnswerChange(index, e.target.value)}
+            />
+
+            {/* Show Result */}
+            {results[index] && (
+              <div className="mt-2 bg-gray-100 p-2 rounded text-sm">
+                <p>Score: {results[index].score}/10</p>
+                <p>{results[index].feedback}</p>
+              </div>
+            )}
           </div>
         ))}
       </div>
+
+      {/* Evaluate Button */}
+      {questions.length > 0 && (
+        <button
+          onClick={handleEvaluate}
+          className="bg-blue-500 text-white px-4 py-2 mt-4"
+        >
+          Evaluate Answers
+        </button>
+      )}
     </div>
   );
 };
