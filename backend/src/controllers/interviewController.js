@@ -19,3 +19,24 @@ export const evaluate = asyncHandler(async (req, res) => {
     data: result,
   });
 });
+
+// src/controllers/interviewController.js
+
+export const evaluateBatchController = asyncHandler(async (req, res) => {
+
+  const { qaList } = req.body;
+
+  if (!qaList || qaList.length === 0) {
+    return res.status(400).json({
+      message: "qaList required"
+    });
+  }
+
+  const result = await evaluateBatch(qaList);
+
+  res.json({
+    success: true,
+    data: result
+  });
+
+});
