@@ -1,11 +1,9 @@
-
 import OpenAI from "openai";
 
 // intiate open AI
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
 
 // Question Generate prompt
 export const generateQuestions = async (resumeText) => {
@@ -89,3 +87,48 @@ Return JSON:
     throw new Error("AI parsing failed");
   }
 };
+
+export const evaluateBatch = async (qaList) => {
+  const formatted = qaList
+    .map(
+      (item, index) => `
+Q${index + 1}: ${item.question}
+A${index + 1}: ${item.answer}
+`,
+    )
+    .join("\n");
+
+  const prompt = `
+You are a senior technical interviewer.
+
+Evaluate the following question-answer pairs.
+
+${formatted}
+
+Return JSON format:
+
+{
+  "results": [
+    {
+      "score": number (0-10),
+      "feedback": "...",
+      "improvement": "..."
+    }
+  ]
+}
+`;
+
+  const response = await client.chat.completions.create({
+    model: "gpt-4.1-mini",
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  const content = response.choices[0].message.content;
+
+  try {
+    return JSON.parse(content);
+  } catch {
+    throw new Error("Batch AI parsing failed");
+  }
+};
+
