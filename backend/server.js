@@ -6,6 +6,8 @@ import authRoutes from "./src/routes/authRoutes.js";
 import { ENV } from "./src/config/env.js";
 import resumeRoutes from "./src/routes/resumeRoutes.js";
 import interviewRoutes from "./src/routes/interviewRoutes.js";
+import analyticsRoutes from "./src/routes/analyticsRoutes.js";
+
 
 // create server
 const app = express();
@@ -24,6 +26,7 @@ app.use("/api/resume", resumeRoutes);
 
 
 app.use("/api/interview", interviewRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // listen the server in port
 app.listen(ENV.PORT, () => {
