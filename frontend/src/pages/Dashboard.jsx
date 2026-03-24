@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
-
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const navigate = useNavigate();
@@ -20,21 +27,16 @@ const Dashboard = () => {
       <h1 className="text-2xl mb-6">Dashboard 🚀</h1>
 
       {stats && (
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="p-4 bg-gray-100 rounded">
-            <p>Total Interviews</p>
-            <h2 className="text-xl">{stats.totalInterviews}</h2>
-          </div>
+        <div className="mt-10">
+          <h2 className="text-lg mb-4">Performance Trend</h2>
 
-          <div className="p-4 bg-gray-100 rounded">
-            <p>Average Score</p>
-            <h2 className="text-xl">{stats.averageScore}</h2>
-          </div>
-
-          <div className="p-4 bg-gray-100 rounded">
-            <p>Best Score</p>
-            <h2 className="text-xl">{stats.bestScore}</h2>
-          </div>
+          <LineChart width={600} height={300} data={stats.chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="score" />
+          </LineChart>
         </div>
       )}
 
