@@ -8,14 +8,28 @@ export const getAnalyticsService = async (userId) => {
   let totalQuestions = 0;
   let bestScore = 0;
 
-  data.forEach((attempt) => {
+  const chartData = [];
+
+  data.forEach((attempt, index) => {
+    let attemptScore = 0;
+
     attempt.results.forEach((r) => {
       totalScore += r.score;
       totalQuestions++;
+      attemptScore += r.score;
 
       if (r.score > bestScore) {
         bestScore = r.score;
       }
+    });
+
+    const avg = attempt.results.length
+      ? (attemptScore / attempt.results.length).toFixed(1)
+      : 0;
+
+    chartData.push({
+      name: `Attempt ${index + 1}`,
+      score: Number(avg),
     });
   });
 
@@ -27,5 +41,6 @@ export const getAnalyticsService = async (userId) => {
     totalInterviews,
     averageScore,
     bestScore,
+    chartData,
   };
 };
