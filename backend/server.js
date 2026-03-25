@@ -8,35 +8,36 @@ import resumeRoutes from "./src/routes/resumeRoutes.js";
 import interviewRoutes from "./src/routes/interviewRoutes.js";
 import analyticsRoutes from "./src/routes/analyticsRoutes.js";
 
-
-// create server
 const app = express();
-// connected to DB
+
+// DB connect
 connectDB();
 
-// client server communication purpose
+// 🔥 CORS (FIRST)
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
 
-
-// parse data in json type
+// 🔥 JSON parser
 app.use(express.json());
 
-// routes
+// 🔥 DEBUG (optional but useful)
+app.use((req, res, next) => {
+  console.log(req.method, req.url);
+  next();
+});
+
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
-
-
 app.use("/api/interview", interviewRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
-// listen the server in port
+// Server start
 app.listen(ENV.PORT, () => {
   console.log(`Server running on port ${ENV.PORT}`);
-  console.log("connected to DataBase");
+  console.log("Connected to Database");
 });
