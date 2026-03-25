@@ -15,7 +15,14 @@ const app = express();
 connectDB();
 
 // client server communication purpose
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  }),
+);
+
 
 // parse data in json type
 app.use(express.json());
