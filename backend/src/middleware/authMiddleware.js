@@ -1,12 +1,13 @@
-
-// auth middleware its used for access a own create page and login user using token
-
 import jwt from "jsonwebtoken";
 import { ENV } from "../config/env.js";
 
-// authMiddleware
 const authMiddleware = (req, res, next) => {
   try {
+    // 🔥 FIX: Allow preflight requests
+    if (req.method === "OPTIONS") {
+      return next();
+    }
+
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
