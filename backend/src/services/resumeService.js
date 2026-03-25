@@ -1,32 +1,16 @@
-// resume Service
-
 import fs from "fs";
 
+export const processResumeService = async (filePath) => {
+  const buffer = fs.readFileSync(filePath);
 
+  // 🔥 CORRECT FIX
+  const pdfParse = (await import("pdf-parse")).default;
 
-const pdfParse = (await import("pdf-parse")).default;
+  const data = await pdfParse(buffer);
 
-import { createResume } from "../repositories/resumeRepository.js";
-import { generateQuestions } from "./aiService.js";
+  const text = data.text;
 
-export const processResumeService = async ({ userId, file }) => {
-  const fileBuffer = fs.readFileSync(file.path);
+  console.log("RESUME TEXT:", text.slice(0, 200));
 
-  const data = await pdfParse(fileBuffer);
-
-  const extractedText = data.text;
-
-  const aiResult = await generateQuestions(extractedText);
-
-  const resume = await createResume({
-    userId,
-    fileName: file.originalname,
-    fileUrl: file.path,
-    extractedText,
-  });
-
-  return {
-    resumeId: resume._id,
-    questions: aiResult.questions,
-  };
+  return text;
 };
