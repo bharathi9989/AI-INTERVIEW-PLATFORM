@@ -14,12 +14,18 @@ const app = express();
 connectDB();
 
 // 🔥 CORS (FIRST)
+
 app.use(
   cors({
     origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   }),
 );
+
+// 🔥 VERY IMPORTANT
+app.options("/*", cors());
 
 // 🔥 JSON parser
 app.use(express.json());
