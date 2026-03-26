@@ -3,7 +3,6 @@ import fs from "fs";
 export const processResumeService = async (filePath) => {
   const buffer = fs.readFileSync(filePath);
 
-  // 🔥 CORRECT FIX
   const pdfParse = (await import("pdf-parse")).default;
 
   const data = await pdfParse(buffer);
@@ -12,5 +11,7 @@ export const processResumeService = async (filePath) => {
 
   console.log("RESUME TEXT:", text.slice(0, 200));
 
-  return text;
+  return {
+    text,
+  };
 };
