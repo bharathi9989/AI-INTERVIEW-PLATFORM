@@ -1,9 +1,11 @@
 import fs from "fs";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse"); // ✅ correct way
 
 export const processResumeService = async (filePath) => {
   const buffer = fs.readFileSync(filePath);
-
-  const pdfParse = (await import("pdf-parse")).default;
 
   const data = await pdfParse(buffer);
 
