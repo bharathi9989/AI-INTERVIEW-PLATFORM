@@ -4,17 +4,15 @@ import { asyncHandler } from "../core/asyncHandler.js";
 import { processResumeService } from "../services/resumeService.js";
 
 export const uploadResume = asyncHandler(async (req, res) => {
-  const file = req.file;
+  console.log("FILE:", req.file); // 🔥 ADD THIS
 
-  if (!file) {
-    return res.status(400).json({
-      message: "No file uploaded",
-    });
+  if (!req.file) {
+    throw new Error("No file uploaded");
   }
 
-  const result = await processResumeService(file.path);
+  const result = await processResumeService(req.file.path);
 
-  res.status(201).json({
+  res.json({
     success: true,
     data: result,
   });
