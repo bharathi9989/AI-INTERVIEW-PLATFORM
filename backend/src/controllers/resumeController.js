@@ -12,10 +12,7 @@ export const uploadResume = asyncHandler(async (req, res) => {
     });
   }
 
-  const result = await processResumeService({
-    userId: req.user.id,
-    file,
-  });
+  const result = await processResumeService(file.path);
 
   res.status(201).json({
     success: true,
