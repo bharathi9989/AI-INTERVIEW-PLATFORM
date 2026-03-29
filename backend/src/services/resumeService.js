@@ -1,35 +1,13 @@
 import fs from "fs";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse");
 
 export const processResumeService = async (filePath) => {
-  try {
-    // 🔥 validate file
-    if (!filePath) {
-      throw new Error("File path missing");
-    }
+  const buffer = fs.readFileSync(filePath);
 
-    // 🔥 read file
-    const buffer = fs.readFileSync(filePath);
+  const data = await pdfParse(buffer);
 
-    // 🔥 dynamic import (ESM fix)
-    const pdfParse = (await import("pdf-parse")).default;
-
-    // 🔥 parse
-    const data = await pdfParse(buffer);
-
-    const text = data.text;
-
-    if (!text) {
-      throw new Error("Failed to extract text from PDF");
-    }
-
-    console.log("TEXT PREVIEW:", text.slice(0, 100));
-
-    return {
-      text,
-      message: "Resume processed successfully",
-    };
-  } catch (error) {
-    console.error("RESUME ERROR:", error);
-    throw error;
-  }
+  return data.text;
 };
