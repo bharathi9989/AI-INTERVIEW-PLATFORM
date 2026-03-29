@@ -20,3 +20,19 @@ export const saveResultService = async (userId, qaList, aiResults) => {
 export const getResultsService = async (userId) => {
   return getUserResults(userId);
 };
+
+export const evaluateBatch = async (qaList) => {
+  return qaList.map(({ question, answer }) => {
+    let score = 5;
+
+    if (answer.length > 50) score += 2;
+    if (answer.toLowerCase().includes("example")) score += 1;
+    if (answer.split(" ").length > 20) score += 2;
+
+    return {
+      score,
+      feedback:
+        score > 7 ? "Strong answer" : "Needs improvement, add more depth",
+    };
+  });
+};
