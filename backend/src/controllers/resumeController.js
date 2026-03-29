@@ -1,23 +1,30 @@
-// Resume controller
-
 import { asyncHandler } from "../core/asyncHandler.js";
-import { processResumeService } from "../services/resumeService.js";
+import {
+  processResumeService,
+  generateQuestions,
+} from "../services/resumeService.js";
 
-export const uploadResume = async (req, res) => {
-  try {
-    console.log("FILE:", req.file);
+export const uploadResume = asyncHandler(async (req, res) => {
+  const file = req.file;
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        questions: [
-          { question: "Tell me about yourself" },
-          { question: "What is Node.js?" },
-        ],
-      },
+  if (!file) {
+    return res.status(400).json({
+      message: "No file uploaded",
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
   }
-};
+
+  // 🔥 STEP 1: PDF → TEXT
+  const text = await processResumeService(file.path);
+
+  console.log("TEXT:", text.slice(0, 100));
+
+  // 🔥 STEP 2: TEXT → QUESTIONS
+  const questions = generateQuestions(text);
+
+  res.status(200).json({
+    success: true,
+    data: {
+      questions,
+    },
+  });
+});
