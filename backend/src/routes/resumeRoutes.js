@@ -50,7 +50,6 @@ const upload = multer({
 */
 router.post(
   "/upload",
-  authMiddleware,
   upload.single("resume"), // 🔥 must match frontend formData key
   uploadResume,
 );
