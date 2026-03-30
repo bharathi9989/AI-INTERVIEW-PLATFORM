@@ -1,23 +1,24 @@
 import fs from "fs";
-import { createRequire } from "module";
-
-const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse"); // ✅ guaranteed working
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.js";
 
 // =====================================================
-// PDF → TEXT
+// PDF → TEXT (SAFE VERSION)
 // =====================================================
 export const processResumeService = async (filePath) => {
   try {
-    if (!filePath) {
-      throw new Error("File path missing");
+    const data = new Uint8Array(fs.readFileSync(filePath));
+
+    const pdf = await pdfjsLib.getDocument({ data }).promise;
+
+    let text = "";
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+
+      const strings = content.items.map((item) => item.str);
+      text += strings.join(" ") + "\n";
     }
-
-    const buffer = fs.readFileSync(filePath);
-
-    const data = await pdfParse(buffer);
-
-    const text = data.text;
 
     if (!text) {
       throw new Error("No text extracted");
@@ -27,7 +28,7 @@ export const processResumeService = async (filePath) => {
 
     return text;
   } catch (error) {
-    console.error("❌ RESUME ERROR:", error.message);
+    console.error("❌ PDF ERROR:", error.message);
     throw new Error("Resume processing failed");
   }
 };
