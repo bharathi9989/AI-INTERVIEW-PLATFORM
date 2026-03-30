@@ -1,37 +1,66 @@
 import fs from "fs";
 
+// =====================================================
+// 🔥 STEP 1: PDF → TEXT
+// =====================================================
 export const processResumeService = async (filePath) => {
   try {
-    if (!filePath) {
-      throw new Error("File path missing");
-    }
-
-    // read file buffer
     const buffer = fs.readFileSync(filePath);
 
-    // 🔥 FIX: require-style import inside ESM
     const pdfParse = (await import("pdf-parse")).default;
-
-    if (typeof pdfParse !== "function") {
-      throw new Error("pdfParse not loaded correctly");
-    }
 
     const data = await pdfParse(buffer);
 
     const text = data.text;
 
     if (!text) {
-      throw new Error("No text extracted from PDF");
+      throw new Error("No text extracted");
     }
 
-    console.log("✅ TEXT EXTRACTED:", text.slice(0, 100));
-
-    return {
-      text,
-      message: "Resume processed successfully",
-    };
+    return text;
   } catch (error) {
-    console.error("❌ RESUME SERVICE ERROR:", error.message);
-    throw new Error("Resume processing failed: " + error.message);
+    console.error("RESUME ERROR:", error.message);
+    throw new Error("Resume processing failed");
   }
+};
+
+// =====================================================
+// 🔥 STEP 2: TEXT → QUESTIONS (RULE-BASED VERSION)
+// =====================================================
+export const generateQuestions = (text) => {
+  const questions = [];
+
+  // simple keyword-based generation
+  if (text.toLowerCase().includes("javascript")) {
+    questions.push({
+      question: "Explain closures in JavaScript",
+      type: "technical",
+      difficulty: "medium",
+    });
+  }
+
+  if (text.toLowerCase().includes("react")) {
+    questions.push({
+      question: "What is Virtual DOM in React?",
+      type: "technical",
+      difficulty: "medium",
+    });
+  }
+
+  if (text.toLowerCase().includes("node")) {
+    questions.push({
+      question: "What is event loop in Node.js?",
+      type: "technical",
+      difficulty: "medium",
+    });
+  }
+
+  // default fallback
+  questions.push({
+    question: "Tell me about yourself",
+    type: "general",
+    difficulty: "easy",
+  });
+
+  return questions;
 };
