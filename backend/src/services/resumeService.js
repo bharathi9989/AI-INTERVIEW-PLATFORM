@@ -1,13 +1,19 @@
 import fs from "fs";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse"); // ✅ guaranteed working
 
 // =====================================================
-// 🔥 STEP 1: PDF → TEXT
+// PDF → TEXT
 // =====================================================
 export const processResumeService = async (filePath) => {
   try {
-    const buffer = fs.readFileSync(filePath);
+    if (!filePath) {
+      throw new Error("File path missing");
+    }
 
-    const pdfParse = (await import("pdf-parse")).default;
+    const buffer = fs.readFileSync(filePath);
 
     const data = await pdfParse(buffer);
 
@@ -17,20 +23,21 @@ export const processResumeService = async (filePath) => {
       throw new Error("No text extracted");
     }
 
+    console.log("✅ TEXT:", text.slice(0, 100));
+
     return text;
   } catch (error) {
-    console.error("RESUME ERROR:", error.message);
+    console.error("❌ RESUME ERROR:", error.message);
     throw new Error("Resume processing failed");
   }
 };
 
 // =====================================================
-// 🔥 STEP 2: TEXT → QUESTIONS (RULE-BASED VERSION)
+// TEXT → QUESTIONS
 // =====================================================
 export const generateQuestions = (text) => {
   const questions = [];
 
-  // simple keyword-based generation
   if (text.toLowerCase().includes("javascript")) {
     questions.push({
       question: "Explain closures in JavaScript",
@@ -41,7 +48,7 @@ export const generateQuestions = (text) => {
 
   if (text.toLowerCase().includes("react")) {
     questions.push({
-      question: "What is Virtual DOM in React?",
+      question: "What is Virtual DOM?",
       type: "technical",
       difficulty: "medium",
     });
@@ -49,13 +56,12 @@ export const generateQuestions = (text) => {
 
   if (text.toLowerCase().includes("node")) {
     questions.push({
-      question: "What is event loop in Node.js?",
+      question: "Explain Node.js event loop",
       type: "technical",
       difficulty: "medium",
     });
   }
 
-  // default fallback
   questions.push({
     question: "Tell me about yourself",
     type: "general",
