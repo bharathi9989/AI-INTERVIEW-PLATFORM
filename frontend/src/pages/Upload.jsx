@@ -10,17 +10,27 @@ const Upload = () => {
   const handleUpload = async () => {
     const formData = new FormData();
     formData.append("resume", file);
-    
 
     try {
       const res = await API.post("/resume/upload", formData);
-      setQuestions(res.data.data.questions);
+
+      const questions = res.data.data.questions;
+      const aiAnswers = res.data.data.answers; // 🔥 IMPORTANT
+
+      setQuestions(questions);
+
+      // 🔥 AUTO FILL ANSWERS
+      const formattedAnswers = {};
+      aiAnswers.forEach((ans, index) => {
+        formattedAnswers[index] = ans;
+      });
+
+      setAnswers(formattedAnswers);
     } catch (error) {
       console.log(error);
       alert("Upload failed");
     }
   };
-
   const handleAnswerChange = (index, value) => {
     setAnswers({ ...answers, [index]: value });
   };
@@ -68,7 +78,7 @@ const Upload = () => {
 
             <textarea
               className="border w-full p-2 mt-2"
-              placeholder="Type your answer..."
+              value={answers[index] || ""}
               onChange={(e) => handleAnswerChange(index, e.target.value)}
             />
 
