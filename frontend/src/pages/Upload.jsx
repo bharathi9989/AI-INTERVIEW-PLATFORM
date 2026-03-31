@@ -10,6 +10,7 @@ const Upload = () => {
   const handleUpload = async () => {
     const formData = new FormData();
     formData.append("resume", file);
+    
 
     try {
       const res = await API.post("/resume/upload", formData);
