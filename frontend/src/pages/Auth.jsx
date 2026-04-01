@@ -1,40 +1,79 @@
 import { useState } from "react";
-import LoginForm from "../components/LoginForm";
-import RegisterForm from "../components/RegisterForm";
+import AuthLayout from "../components/AuthLayout";
+import InputField from "../components/InputField";
+import Button from "../components/Button";
+import API from "../api/axios";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const url = isLogin ? "/auth/login" : "/auth/register";
+      const res = await API.post(url, form);
+
+      console.log(res.data);
+      alert("Success 🚀");
+    } catch (err) {
+      alert(err.response?.data?.message || "Error");
+    }
+    setLoading(false);
+  };
 
   return (
-    <div className="min-h-screen flex">
-      {/* LEFT SIDE */}
-      <div className="hidden md:flex w-1/2 bg-gradient-to-br from-purple-600 to-blue-500 text-white items-center justify-center">
-        <div className="text-center px-10">
-          <h1 className="text-4xl font-bold mb-4">AI Interview Platform 🚀</h1>
-          <p className="text-lg">Crack interviews with AI-powered practice</p>
-        </div>
+    <AuthLayout>
+      <h2 className="text-2xl text-white font-bold text-center mb-6">
+        {isLogin ? "Login" : "Create Account"}
+      </h2>
+
+      <div className="space-y-4">
+        {!isLogin && (
+          <InputField
+            type="text"
+            placeholder="Full Name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+        )}
+
+        <InputField
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+        />
+
+        <InputField
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+        />
+
+        <Button
+          text={isLogin ? "Login" : "Register"}
+          onClick={handleSubmit}
+          loading={loading}
+        />
       </div>
 
-      {/* RIGHT SIDE */}
-      <div className="flex w-full md:w-1/2 items-center justify-center bg-gray-100">
-        <div className="bg-white shadow-xl rounded-2xl p-8 w-[400px]">
-          <h2 className="text-2xl font-bold text-center mb-6">
-            {isLogin ? "Login" : "Register"}
-          </h2>
-
-          {isLogin ? <LoginForm /> : <RegisterForm />}
-
-          <p className="text-center mt-4 text-sm">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-blue-500 ml-2 font-semibold"
-            >
-              {isLogin ? "Register" : "Login"}
-            </button>
-          </p>
-        </div>
-      </div>
-    </div>
+      <p className="text-center text-gray-300 mt-4 text-sm">
+        {isLogin ? "No account?" : "Already registered?"}
+        <button
+          onClick={() => setIsLogin(!isLogin)}
+          className="text-indigo-400 ml-2 font-semibold"
+        >
+          {isLogin ? "Register" : "Login"}
+        </button>
+      </p>
+    </AuthLayout>
   );
 }
