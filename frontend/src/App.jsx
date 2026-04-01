@@ -1,19 +1,20 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
+import Auth from "./pages/Auth.jsx"; // 🔥 NEW UI
 import Dashboard from "./pages/Dashboard.jsx";
 import Upload from "./pages/Upload.jsx";
-import { Navigate } from "react-router-dom";
-
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* 🔥 Redirect root */}
+        <Route path="/" element={<Navigate to="/auth" />} />
+
+        {/* 🔥 SINGLE AUTH PAGE */}
+        <Route path="/auth" element={<Auth />} />
+
+        {/* 🔥 PROTECTED PAGES */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/upload" element={<Upload />} />
       </Routes>
