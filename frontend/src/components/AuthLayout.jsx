@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router-dom";
 export default function AuthLayout({ children }) {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex bg-gray-900">
       {/* LEFT SIDE */}
@@ -11,11 +13,17 @@ export default function AuthLayout({ children }) {
 
         {/* 🔥 CTA BUTTONS */}
         <div className="flex justify-center gap-4">
-          <button className="bg-white text-purple-600 px-5 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
+          <button
+            onClick={() => navigate("/auth")}
+            className="bg-white text-purple-600 px-5 py-2 rounded-lg font-semibold hover:bg-gray-200 transition"
+          >
             Login
           </button>
 
-          <button className="border border-white px-5 py-2 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition">
+          <button
+            onClick={() => navigate("/auth")}
+            className="border border-white px-5 py-2 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition"
+          >
             Sign Up
           </button>
         </div>
