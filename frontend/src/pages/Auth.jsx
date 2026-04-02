@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AuthLayout from "../components/AuthLayout";
+import AuthLayout from "../layouts/AuthLayout";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 import API from "../api/axios";
