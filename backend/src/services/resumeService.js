@@ -1,45 +1,45 @@
 import fs from "fs";
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+import { createRequire } from "module";
 
-// =====================================================
-// PDF → TEXT (SAFE VERSION)
-// =====================================================
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse");
+
+// ================================
+// PDF → TEXT
+// ================================
 export const processResumeService = async (filePath) => {
   try {
-    const data = new Uint8Array(fs.readFileSync(filePath));
+    if (!filePath) throw new Error("File path missing");
 
-    const pdf = await pdfjsLib.getDocument({ data }).promise;
+    const buffer = fs.readFileSync(filePath);
 
-    let text = "";
+    const data = await pdfParse(buffer);
 
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
+    let text = data.text;
 
-      const strings = content.items.map((item) => item.str);
-      text += strings.join(" ") + "\n";
-    }
-
-    if (!text) {
-      throw new Error("No text extracted");
+    // fallback check
+    if (!text || text.trim().length < 20) {
+      throw new Error("PDF has no readable text (maybe scanned)");
     }
 
     console.log("✅ TEXT:", text.slice(0, 100));
 
     return text;
   } catch (error) {
-    console.error("❌ PDF ERROR:", error.message);
+    console.error("❌ RESUME ERROR:", error.message);
     throw new Error("Resume processing failed");
   }
 };
 
-// =====================================================
+// ================================
 // TEXT → QUESTIONS
-// =====================================================
+// ================================
 export const generateQuestions = (text) => {
   const questions = [];
 
-  if (text.toLowerCase().includes("javascript")) {
+  const lower = text.toLowerCase();
+
+  if (lower.includes("javascript")) {
     questions.push({
       question: "Explain closures in JavaScript",
       type: "technical",
@@ -47,7 +47,7 @@ export const generateQuestions = (text) => {
     });
   }
 
-  if (text.toLowerCase().includes("react")) {
+  if (lower.includes("react")) {
     questions.push({
       question: "What is Virtual DOM?",
       type: "technical",
@@ -55,7 +55,7 @@ export const generateQuestions = (text) => {
     });
   }
 
-  if (text.toLowerCase().includes("node")) {
+  if (lower.includes("node")) {
     questions.push({
       question: "Explain Node.js event loop",
       type: "technical",
@@ -63,6 +63,7 @@ export const generateQuestions = (text) => {
     });
   }
 
+  // always add fallback
   questions.push({
     question: "Tell me about yourself",
     type: "general",
