@@ -23,7 +23,9 @@ export default function LoginForm() {
       alert("Login Success 🚀");
 
       // ✅ REDIRECT
-      navigate("/dashboard");
+     console.log("BEFORE NAVIGATE");
+     navigate("/dashboard");
+     console.log("AFTER NAVIGATE");
     } catch (err) {
       console.log(err);
       alert("Login failed");
