@@ -11,6 +11,8 @@ const Upload = () => {
     const formData = new FormData();
     formData.append("resume", file);
 
+    await API.post("/resume/upload", formData); 
+
     try {
       const res = await API.post("/resume/upload", formData);
 
